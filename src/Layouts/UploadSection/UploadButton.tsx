@@ -1,7 +1,5 @@
-import { Box, Button, Flex } from "@mantine/core";
-import { open, OpenDialogOptions } from "@tauri-apps/api/dialog";
-import { MD5, lib } from "crypto-js";
-import { readBinaryFile } from "@tauri-apps/api/fs";
+import { Button, Flex } from "@mantine/core";
+import { open } from "@tauri-apps/api/dialog";
 
 type UploadButtonProps = {
   handleSetFiles: (files: string[]) => void;
@@ -9,6 +7,7 @@ type UploadButtonProps = {
 
 export const UploadButton = ({ handleSetFiles }: UploadButtonProps) => {
   const handleOpenDialog = () => {
+    // invoke("calc_md5", { filenames: ["a.c", "b.js"] });
     open({
       directory: false,
       multiple: true,
