@@ -1,6 +1,6 @@
 [package]
 name = "checksome"
-version = "0.0.0"
+version = "0.2.0"
 description = "A Tauri App"
 authors = ["you"]
 license = ""
@@ -16,8 +16,20 @@ tauri-build = { version = "1.2", features = [] }
 tauri = { version = "1.2", features = ["dialog-open", "fs-read-file", "shell-open"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+md-5 = "0.10.5"
+base16ct = { version = "0.2.0", features = ["alloc"] }
+rayon = "1.7.0"
+dashmap = { version = "5.4.0", features = ["rayon", "serde"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
 # DO NOT REMOVE!!
 custom-protocol = ["tauri/custom-protocol"]
+
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+lto = true
+incremental = false
+opt-level = "s"  # can experiment with 'z' as well
