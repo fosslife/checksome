@@ -1,12 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use ahash::AHashMap;
+use dashmap::DashMap;
 use md5::{Digest, Md5};
 use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::{
-    // collections::HashMap,
     fs,
     io::{self},
     time::Instant,
@@ -25,9 +24,9 @@ struct FileInfo {
 }
 
 #[tauri::command]
-fn calc_md5(filenames: Vec<String>) -> AHashMap<String, FileInfo> {
-    let mut map = AHashMap::new();
-    for file in filenames {
+fn calc_md5(filenames: Vec<String>) -> DashMap<String, FileInfo> {
+    let map = DashMap::new();
+    filenames.into_par_iter().for_each(|file| {
         let start = Instant::now();
         let mut hasher = Md5::new();
         let mut f = fs::File::open(&file).unwrap();
@@ -38,10 +37,10 @@ fn calc_md5(filenames: Vec<String>) -> AHashMap<String, FileInfo> {
         map.insert(
             file,
             FileInfo {
-                time: duration.as_millis(),
                 hash: hex_hash,
+                time: duration.as_millis(),
             },
         );
-    }
+    });
     map
 }
